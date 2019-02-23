@@ -8,6 +8,7 @@ import javax.swing.UIManager;
 public class RobotsProgram
 {
     public static void main(String[] args) {
+      // Весь блок try-catch отвечает за внешний вид окна. Можно всё убрать, работать будет
       try {
         UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 //        UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
@@ -16,10 +17,15 @@ public class RobotsProgram
       } catch (Exception e) {
         e.printStackTrace();
       }
+      // Запускает асинхронную обработку события
       SwingUtilities.invokeLater(() -> {
+        // Создаём главное окно/рамку
         MainApplicationFrame frame = new MainApplicationFrame();
+        // Как-то распределяет объекты внутри окна
         frame.pack();
+        // Делает окна видимыми
         frame.setVisible(true);
+        // Растягивает главное окно на весь экран
         frame.setExtendedState(Frame.MAXIMIZED_BOTH);
       });
     }}
