@@ -8,7 +8,7 @@ import javax.swing.UIManager;
 public class RobotsProgram
 {
     public static void main(String[] args) {
-      // Весь блок try-catch отвечает за внешний вид окна. Можно всё убрать, работать будет
+      // Весь блок try-catch отвечает за внешний вид окна, нужен, если указанного не будет
       try {
         UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 //        UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");

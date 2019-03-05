@@ -2,3 +2,5 @@
 /robots/.settings
 /robots/bin
 *.iml
+*.idea
+/out
