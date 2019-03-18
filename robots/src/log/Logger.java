@@ -7,7 +7,7 @@ public final class Logger
         defaultLogSource = new LogWindowSource(5);
     }
 
-    // Для сериализации?
+    // Конструктор для сериализации?
     private Logger()
     {
     }

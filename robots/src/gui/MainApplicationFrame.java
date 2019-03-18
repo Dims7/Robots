@@ -1,15 +1,20 @@
 package gui;
 
+//import com.sun.codemodel.internal.JOp;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
+import java.awt.event.WindowEvent;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -45,7 +50,7 @@ public class MainApplicationFrame extends JFrame
         gameWindow.setSize(400,  400);
         addWindow(gameWindow);
 
-        setJMenuBar(generateMenuBar());
+        setJMenuBar(createMenuBar());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
     
@@ -66,35 +71,45 @@ public class MainApplicationFrame extends JFrame
         frame.setVisible(true);
     }
     
-//    protected JMenuBar createMenuBar() {
-//        JMenuBar menuBar = new JMenuBar();
-// 
-//        //Set up the lone menu.
-//        JMenu menu = new JMenu("Document");
-//        menu.setMnemonic(KeyEvent.VK_D);
-//        menuBar.add(menu);
-// 
-//        //Set up the first menu item.
-//        JMenuItem menuItem = new JMenuItem("New");
-//        menuItem.setMnemonic(KeyEvent.VK_N);
-//        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-//                KeyEvent.VK_N, ActionEvent.ALT_MASK));
-//        menuItem.setActionCommand("new");
-////        menuItem.addActionListener(this);
-//        menu.add(menuItem);
-// 
-//        //Set up the second menu item.
-//        menuItem = new JMenuItem("Quit");
-//        menuItem.setMnemonic(KeyEvent.VK_Q);
-//        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-//                KeyEvent.VK_Q, ActionEvent.ALT_MASK));
-//        menuItem.setActionCommand("quit");
-////        menuItem.addActionListener(this);
-//        menu.add(menuItem);
-// 
-//        return menuBar;
-//    }
-    
+    protected JMenuBar createMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+
+        //Set up the lone menu.
+        JMenu menu = new JMenu("Документ");
+        menu.setMnemonic(KeyEvent.VK_D);
+        menuBar.add(menu);
+
+        //Set up the first menu item.
+        JMenuItem menuItem = new JMenuItem("Новый");
+        menuItem.setMnemonic(KeyEvent.VK_N);
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_N, ActionEvent.ALT_MASK));
+        menuItem.setActionCommand("new");
+        //menuItem.addActionListener(this);
+        menu.add(menuItem);
+
+        //Set up the second menu item.
+        menuItem = new JMenuItem("Закрыть");
+        menuItem.setMnemonic(KeyEvent.VK_Q);
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_Q, ActionEvent.ALT_MASK));
+        menuItem.setActionCommand("quit");
+        menuItem.addActionListener((event) -> System.exit(0));
+        menu.add(menuItem);
+
+        return menuBar;
+    }
+
+    private JOptionPane createOptionPane()
+    {
+        JOptionPane optionPane = new JOptionPane("TestABC");
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        UIManager.put("OptionPane.yesButtonText"   , "Да"    );
+        UIManager.put("OptionPane.noButtonText"    , "Нет"   );
+        UIManager.put("OptionPane.cancelButtonText", "Отмена");
+        return optionPane;
+    }
+
     private JMenuBar generateMenuBar()
     {
         JMenuBar menuBar = new JMenuBar();
