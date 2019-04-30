@@ -5,18 +5,10 @@ package gui;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.*;
+import java.io.File;
 
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import log.Logger;
 import sun.awt.WindowClosingListener;
@@ -104,12 +96,26 @@ public class MainApplicationFrame extends JFrame {
 
         JMenu documentMenu = getJMenu("Документ", KeyEvent.VK_C, "Работа с документом");
 
+        addMenuItem(documentMenu, "Загрузить логику робота", (event) -> changeLogic(), KeyEvent.VK_L);
         addMenuItem(documentMenu, "Закрыть", (event) -> onClose(), KeyEvent.VK_Q);
 
         menuBar.add(documentMenu);
         menuBar.add(lookAndFeelMenu);
         menuBar.add(testMenu);
         return menuBar;
+    }
+
+    private void changeLogic() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(new FileNameExtensionFilter("Robot logic class (.class)", "class"));
+        chooser.setCurrentDirectory(new File("."));
+        int returnVal = chooser.showSaveDialog(this);
+        if (returnVal == chooser.APPROVE_OPTION)
+            System.out.println(chooser.getSelectedFile());
+
+
+
+
     }
 
     private void addMenuItem(JMenu lookAndFeelMenu, String name, ActionListener actionListener, int keyEvent) {
