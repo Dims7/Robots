@@ -1,6 +1,5 @@
 package gui;
 
-//import com.sun.codemodel.internal.JOp;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -19,7 +18,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import log.Logger;
-import sun.awt.WindowClosingListener;
+//import sun.awt.WindowClosingListener;
 
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
