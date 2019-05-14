@@ -7,13 +7,13 @@ import static AdditionalMath.Additional.distance;
 
 import AdditionalMath.RobotCondition;
 
-public class StandardRobotLogic {
+public class StandardRobotLogic implements Robot{
 
   private static final double maxVelocity = 0.1;
   private static final double maxAngularVelocity = 0.001;
 
 
-  protected RobotCondition onModelUpdateEvent(double m_robotPositionX, double m_robotPositionY,
+  public RobotCondition onModelUpdateEvent(double m_robotPositionX, double m_robotPositionY,
       double m_robotDirection, double m_targetPositionX, double m_targetPositionY) {
     double distance = distance(m_targetPositionX, m_targetPositionY,
         m_robotPositionX, m_robotPositionY);
@@ -35,7 +35,7 @@ public class StandardRobotLogic {
 
   }
 
-  private RobotCondition moveRobot(double velocity, double angularVelocity, double duration,
+  public RobotCondition moveRobot(double velocity, double angularVelocity, double duration,
       double m_robotPositionX, double m_robotPositionY, double m_robotDirection) {
     velocity = applyLimits(velocity, 0, maxVelocity);
     angularVelocity = applyLimits(angularVelocity, -maxAngularVelocity, maxAngularVelocity);
