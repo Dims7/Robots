@@ -30,16 +30,14 @@ public class GameWindow extends JInternalFrame {
     public void addRobot(Robot robot) {
         Random random = new Random();
         float r = random.nextFloat();
-        float g = random.nextFloat();
-        float b = random.nextFloat();
-        getGameVisualizer().addRobot(robot, Color.getHSBColor(r, g, b));
+//        float g = random.nextFloat();
+//        float b = random.nextFloat();
+        getGameVisualizer().addRobot(robot, Color.getHSBColor(r, 1, 1));
     }
 
     public void setRobot(Robot robot) {
         Random random = new Random();
         float r = random.nextFloat();
-        float g = random.nextFloat();
-        float b = random.nextFloat();
-        getGameVisualizer().setRobot(robot, 0, Color.getHSBColor(r, g, b));
+        getGameVisualizer().setRobot(robot, 0, Color.getHSBColor(r, 1, 1));
     }
 }
