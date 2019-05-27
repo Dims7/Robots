@@ -6,10 +6,14 @@ import java.awt.Toolkit;
 import java.awt.event.*;
 import java.io.File;
 
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import log.Logger;
+import logic.Robot;
 //import sun.awt.WindowClosingListener;
 
 public class MainApplicationFrame extends JFrame {
@@ -105,14 +109,35 @@ public class MainApplicationFrame extends JFrame {
     }
 
     private void changeLogic() {
-        JFileChooser chooser = new JFileChooser();
+        /*JFileChooser chooser = new JFileChooser();
         chooser.setFileFilter(new FileNameExtensionFilter("Robot logic class (.class)", "class"));
         chooser.setCurrentDirectory(new File("."));
         int returnVal = chooser.showSaveDialog(this);
         if (returnVal == chooser.APPROVE_OPTION)
-            System.out.println(chooser.getSelectedFile());
+            //System.out.println(chooser.getSelectedFile());
 
-
+         */
+        try
+        {
+            //String strClassName = chooser.getSelectedFile();
+            String strClassName = "logic.StandardRobotLogic";
+            Class<Robot> clazz = (Class<Robot>)Class.forName(strClassName);
+            Constructor<Robot> constr = clazz.getDeclaredConstructor(
+                new Class[] {});
+            Robot robot = constr.newInstance(
+                new Object[]{});
+            System.out.println("dsfsd");
+        }
+        catch (ClassNotFoundException
+            | InstantiationException
+            | IllegalAccessException ex)
+        {
+            ex.printStackTrace();
+        } catch (NoSuchMethodException e) {
+          e.printStackTrace();
+        } catch (InvocationTargetException e) {
+          e.printStackTrace();
+        }
 
 
     }
