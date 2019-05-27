@@ -34,8 +34,6 @@ public class GameVisualizer extends JPanel {
     m_timer.schedule(new TimerTask() {
       @Override
       public void run() {
-
-        System.out.println("2");
         onRedrawEvent();
       }
     }, 0, 50);
@@ -81,8 +79,6 @@ public class GameVisualizer extends JPanel {
     m_timer.schedule(new TimerTask() {
       @Override
       public void run() {
-
-        System.out.println("1");
         onRedrawEvent();
       }
     }, 0, 50);
