@@ -3,6 +3,7 @@ package gui;
 import static AdditionalMath.Additional.round;
 
 import AdditionalMath.RobotCondition;
+
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Graphics;
@@ -11,129 +12,161 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
+import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.JPanel;
+
 import logic.Robot;
 
 
 public class GameVisualizer extends JPanel {
 
-  private static final double maxVelocity = 0.1;
-  private static final double maxAngularVelocity = 0.001;
-  private Timer m_timer = initTimer();
-  private volatile Robot m_robot;
-  private volatile double m_robotPositionX = 100;
-  private volatile double m_robotPositionY = 100;
-  private volatile double m_robotDirection = 0;
-  private volatile int m_targetPositionX = 150;
-  private volatile int m_targetPositionY = 100;
+    private static final double maxVelocity = 0.1;
+    private static final double maxAngularVelocity = 0.001;
 
-  public GameVisualizer(Robot robot) {
-    m_robot = robot;
-    m_timer.schedule(new TimerTask() {
-      @Override
-      public void run() {
-        onRedrawEvent();
-      }
-    }, 0, 50);
-    m_timer.schedule(new TimerTask() {
-      @Override
-      public void run() {
-        RobotCondition newRobotCondition = m_robot
-            .onModelUpdateEvent(m_robotPositionX, m_robotPositionY, m_robotDirection,
-                m_targetPositionX, m_targetPositionY);
-        m_robotPositionX = newRobotCondition.X;
-        m_robotPositionY = newRobotCondition.Y;
-        m_robotDirection = newRobotCondition.DIRECTION;
-      }
-    }, 0, 10);
-    addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(MouseEvent e) {
-        setTargetPosition(e.getPoint());
-        repaint();
-      }
-    });
-    setDoubleBuffered(true);
-  }
+    private ArrayList<Timer> timers = new ArrayList<>();
+    private ArrayList<RobotStatus> robotStatuses = new ArrayList<>();
+    private ArrayList<Color> robotsColors = new ArrayList<>();
 
-  private static Timer initTimer() {
-    Timer timer = new Timer("events generator", true);
-    return timer;
-  }
+    private volatile int m_targetPositionX = 150;
+    private volatile int m_targetPositionY = 100;
 
-  private static void fillOval(Graphics g, int centerX, int centerY, int diam1, int diam2) {
-    g.fillOval(centerX - diam1 / 2, centerY - diam2 / 2, diam1, diam2);
-  }
+    public GameVisualizer(Robot robot, Color robotColor) {
+        addRobot(robot, robotColor);
 
-  private static void drawOval(Graphics g, int centerX, int centerY, int diam1, int diam2) {
-    g.drawOval(centerX - diam1 / 2, centerY - diam2 / 2, diam1, diam2);
-  }
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                setTargetPosition(e.getPoint());
+                repaint();
+            }
+        });
+        setDoubleBuffered(true);
+    }
 
-  public void setRobot(Robot robot) {
-    m_robot = robot;
-    m_timer.cancel();
-    m_timer = initTimer();
+    public void addRobot(Robot robot, Color robotColor) {
+        robotsColors.add(robotColor);
+        Timer currentTimer = initTimer();
+        timers.add(currentTimer);
+        RobotStatus currentRobotStatus = new RobotStatus();
+        robotStatuses.add(currentRobotStatus);
+        currentTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                onRedrawEvent();
+            }
+        }, 0, 50);
+        currentTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                RobotCondition newRobotCondition = robot
+                        .onModelUpdateEvent(currentRobotStatus.m_robotPositionX, currentRobotStatus.m_robotPositionY, currentRobotStatus.m_robotDirection,
+                                m_targetPositionX, m_targetPositionY);
+                currentRobotStatus.m_robotPositionX = newRobotCondition.X;
+                currentRobotStatus.m_robotPositionY = newRobotCondition.Y;
+                currentRobotStatus.m_robotDirection = newRobotCondition.DIRECTION;
+            }
+        }, 0, 10);
+    }
 
-    m_timer.schedule(new TimerTask() {
-      @Override
-      public void run() {
-        onRedrawEvent();
-      }
-    }, 0, 50);
-    m_timer.schedule(new TimerTask() {
-      @Override
-      public void run() {
-        RobotCondition newRobotCondition = m_robot
-            .onModelUpdateEvent(m_robotPositionX, m_robotPositionY, m_robotDirection,
-                m_targetPositionX, m_targetPositionY);
-        m_robotPositionX = newRobotCondition.X;
-        m_robotPositionY = newRobotCondition.Y;
-        m_robotDirection = newRobotCondition.DIRECTION;
-      }
-    }, 0, 10);
+    private static Timer initTimer() {
+        Timer timer = new Timer("events generator", true);
+        return timer;
+    }
 
-  }
+    private static void fillOval(Graphics g, int centerX, int centerY, int diam1, int diam2) {
+        g.fillOval(centerX - diam1 / 2, centerY - diam2 / 2, diam1, diam2);
+    }
 
-  protected void setTargetPosition(Point p) {
-    m_targetPositionX = p.x;
-    m_targetPositionY = p.y;
-  }
+    private static void drawOval(Graphics g, int centerX, int centerY, int diam1, int diam2) {
+        g.drawOval(centerX - diam1 / 2, centerY - diam2 / 2, diam1, diam2);
+    }
 
-  protected void onRedrawEvent() {
-    EventQueue.invokeLater(this::repaint);
-  }
 
-  @Override
-  public void paint(Graphics g) {
-    super.paint(g);
-    Graphics2D g2d = (Graphics2D) g;
-    drawRobot(g2d, round(m_robotPositionX), round(m_robotPositionY), m_robotDirection);
-    drawTarget(g2d, m_targetPositionX, m_targetPositionY);
-  }
 
-  private void drawRobot(Graphics2D g, int x, int y, double direction) {
-    int robotCenterX = round(m_robotPositionX);
-    int robotCenterY = round(m_robotPositionY);
-    AffineTransform t = AffineTransform.getRotateInstance(direction, robotCenterX, robotCenterY);
-    g.setTransform(t);
-    g.setColor(Color.MAGENTA);
-    fillOval(g, robotCenterX, robotCenterY, 30, 10);
-    g.setColor(Color.BLACK);
-    drawOval(g, robotCenterX, robotCenterY, 30, 10);
-    g.setColor(Color.WHITE);
-    fillOval(g, robotCenterX + 10, robotCenterY, 5, 5);
-    g.setColor(Color.BLACK);
-    drawOval(g, robotCenterX + 10, robotCenterY, 5, 5);
-  }
+    public void setRobot(Robot robot, int id, Color robotColor) {
 
-  private void drawTarget(Graphics2D g, int x, int y) {
-    AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
-    g.setTransform(t);
-    g.setColor(Color.GREEN);
-    fillOval(g, x, y, 5, 5);
-    g.setColor(Color.BLACK);
-    drawOval(g, x, y, 5, 5);
-  }
+        robotsColors.set(id, robotColor);
+
+        timers.get(id).cancel();
+        Timer currentTimer = initTimer();
+        RobotStatus currentRobotStatus = new RobotStatus();
+
+        timers.set(id, currentTimer);
+        robotStatuses.set(id, currentRobotStatus);
+
+        timers.get(id).schedule(new TimerTask() {
+            @Override
+            public void run() {
+                onRedrawEvent();
+            }
+        }, 0, 50);
+        timers.get(id).schedule(new TimerTask() {
+            @Override
+            public void run() {
+                RobotCondition newRobotCondition = robot
+                        .onModelUpdateEvent(currentRobotStatus.m_robotPositionX, currentRobotStatus.m_robotPositionY, currentRobotStatus.m_robotDirection,
+                                m_targetPositionX, m_targetPositionY);
+                currentRobotStatus.m_robotPositionX = newRobotCondition.X;
+                currentRobotStatus.m_robotPositionY = newRobotCondition.Y;
+                currentRobotStatus.m_robotDirection = newRobotCondition.DIRECTION;
+            }
+        }, 0, 10);
+
+    }
+
+    protected void setTargetPosition(Point p) {
+        m_targetPositionX = p.x;
+        m_targetPositionY = p.y;
+    }
+
+    protected void onRedrawEvent() {
+        EventQueue.invokeLater(this::repaint);
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        for (int i = 0; i < robotStatuses.size(); ++i) {
+            RobotStatus robotStatus = robotStatuses.get(i);
+            Graphics2D g2d = (Graphics2D) g;
+            Color currentRobotColors = robotsColors.get(i);
+            drawRobot(g2d, round(robotStatus.m_robotPositionX), round(robotStatus.m_robotPositionY), robotStatus.m_robotDirection, robotStatus, currentRobotColors);
+            drawTarget(g2d, m_targetPositionX, m_targetPositionY);
+        }
+    }
+
+    private void drawRobot(Graphics2D g, int x, int y, double direction, RobotStatus robotStatus, Color color) {
+        int robotCenterX = round(robotStatus.m_robotPositionX);
+        int robotCenterY = round(robotStatus.m_robotPositionY);
+        AffineTransform t = AffineTransform.getRotateInstance(direction, robotCenterX, robotCenterY);
+        g.setTransform(t);
+        g.setColor(color);
+        fillOval(g, robotCenterX, robotCenterY, 30, 10);
+        g.setColor(Color.BLACK);
+        drawOval(g, robotCenterX, robotCenterY, 30, 10);
+        g.setColor(Color.WHITE);
+        fillOval(g, robotCenterX + 10, robotCenterY, 5, 5);
+        g.setColor(Color.BLACK);
+        drawOval(g, robotCenterX + 10, robotCenterY, 5, 5);
+    }
+
+    private void drawTarget(Graphics2D g, int x, int y) {
+        AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
+        g.setTransform(t);
+        g.setColor(Color.GREEN);
+        fillOval(g, x, y, 5, 5);
+        g.setColor(Color.BLACK);
+        drawOval(g, x, y, 5, 5);
+    }
+
+    class RobotStatus {
+        volatile double m_robotPositionX = 100;
+        volatile double m_robotPositionY = 100;
+        volatile double m_robotDirection = 0;
+
+
+    }
 }

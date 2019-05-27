@@ -141,7 +141,7 @@ public class MainApplicationFrame extends JFrame {
         Constructor<Robot> constr = clazz.getDeclaredConstructor();
         Robot robot = constr.newInstance();
         gameWindow.robot = robot;
-        gameWindow.setRobot(robot);
+        gameWindow.addRobot(robot);
 
       } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex) {
         ex.printStackTrace();
