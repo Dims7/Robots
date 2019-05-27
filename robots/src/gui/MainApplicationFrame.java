@@ -18,6 +18,7 @@ import logic.Robot;
 
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
+    GameWindow gameWindow;
 
     public MainApplicationFrame() {
         //Make the big window be indented 50 pixels from each edge
@@ -34,7 +35,7 @@ public class MainApplicationFrame extends JFrame {
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
 
-        GameWindow gameWindow = new GameWindow();
+        gameWindow = new GameWindow();
         gameWindow.setSize(400, 400);
         addWindow(gameWindow);
 
@@ -120,13 +121,16 @@ public class MainApplicationFrame extends JFrame {
         try
         {
             //String strClassName = chooser.getSelectedFile();
-            String strClassName = "logic.StandardRobotLogic";
+            String strClassName = "logic.RightLogic";
             Class<Robot> clazz = (Class<Robot>)Class.forName(strClassName);
+
             Constructor<Robot> constr = clazz.getDeclaredConstructor(
                 new Class[] {});
             Robot robot = constr.newInstance(
                 new Object[]{});
-            System.out.println("dsfsd");
+            gameWindow.robot = robot;
+            gameWindow.setRobot(robot);
+
         }
         catch (ClassNotFoundException
             | InstantiationException
@@ -138,6 +142,7 @@ public class MainApplicationFrame extends JFrame {
         } catch (InvocationTargetException e) {
           e.printStackTrace();
         }
+
 
 
     }

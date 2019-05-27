@@ -7,10 +7,10 @@ import static AdditionalMath.Additional.distance;
 
 import AdditionalMath.RobotCondition;
 
-public class StandardRobotLogic implements Robot{
+public class StopLogic implements Robot{
 
-  private static final double maxVelocity = 0.1;
-  private static final double maxAngularVelocity = 0.001;
+  private static final double maxVelocity = 0;
+  private static final double maxAngularVelocity = 0;
 
 
   public RobotCondition onModelUpdateEvent(double m_robotPositionX, double m_robotPositionY,

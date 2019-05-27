@@ -11,14 +11,21 @@ import javax.swing.JPanel;
 public class GameWindow extends JInternalFrame
 {
     private final GameVisualizer m_visualizer;
+    public Robot robot = new StandardRobotLogic();
     public GameWindow() 
     {
         super("Игровое поле", true, true, true, true);
-        Robot robot = new StandardRobotLogic();
         m_visualizer = new GameVisualizer(robot);
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(m_visualizer, BorderLayout.CENTER);
         getContentPane().add(panel);
         pack();
+    }
+
+    public GameVisualizer getGameVisualizer() {
+        return m_visualizer;
+    }
+    public void setRobot(Robot robot) {
+        getGameVisualizer().setRobot(robot);
     }
 }

@@ -1,5 +1,6 @@
 package logic;
 
+
 import static AdditionalMath.Additional.angleTo;
 import static AdditionalMath.Additional.applyLimits;
 import static AdditionalMath.Additional.asNormalizedRadians;
@@ -7,12 +8,12 @@ import static AdditionalMath.Additional.distance;
 
 import AdditionalMath.RobotCondition;
 
-public class StandardRobotLogic implements Robot{
+public class RightLogic implements Robot {
 
   private static final double maxVelocity = 0.1;
-  private static final double maxAngularVelocity = 0.001;
+  private static final double maxAngularVelocity = 0.005;
 
-
+  @Override
   public RobotCondition onModelUpdateEvent(double m_robotPositionX, double m_robotPositionY,
       double m_robotDirection, double m_targetPositionX, double m_targetPositionY) {
     double distance = distance(m_targetPositionX, m_targetPositionY,
@@ -20,21 +21,23 @@ public class StandardRobotLogic implements Robot{
     if (distance < 0.5) {
       return new RobotCondition(m_robotPositionX, m_robotPositionY, m_robotDirection);
     }
-    double angleToTarget = angleTo(m_robotPositionX, m_robotPositionY, m_targetPositionX,
-        m_targetPositionY);
+    double velocity = maxVelocity;
+    double angleToTarget = angleTo(m_robotPositionX, m_robotPositionY, m_targetPositionX, m_targetPositionY);
     double angularVelocity = 0;
-    if (angleToTarget > m_robotDirection) {
+    double diffBetwenRobotAndTargetDitection = angleToTarget - m_robotDirection;
+    double pogreshnost = 0.025d;
+    if (diffBetwenRobotAndTargetDitection >= Math.PI
+        || diffBetwenRobotAndTargetDitection >= -Math.PI && diffBetwenRobotAndTargetDitection < pogreshnost)
+      angularVelocity = -maxAngularVelocity;
+    if (diffBetwenRobotAndTargetDitection < -Math.PI
+        || diffBetwenRobotAndTargetDitection > pogreshnost && diffBetwenRobotAndTargetDitection < Math.PI) {
       angularVelocity = maxAngularVelocity;
     }
-    if (angleToTarget < m_robotDirection) {
-      angularVelocity = -maxAngularVelocity;
-    }
-
     return moveRobot(maxVelocity, angularVelocity, 10, m_robotPositionX, m_robotPositionY,
         m_robotDirection);
-
   }
 
+  @Override
   public RobotCondition moveRobot(double velocity, double angularVelocity, double duration,
       double m_robotPositionX, double m_robotPositionY, double m_robotDirection) {
     velocity = applyLimits(velocity, 0, maxVelocity);
