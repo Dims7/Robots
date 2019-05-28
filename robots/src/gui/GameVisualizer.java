@@ -12,7 +12,6 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -28,7 +27,6 @@ public class GameVisualizer extends JPanel {
 
     private ArrayList<Timer> timers = new ArrayList<>();
     private ArrayList<RobotStatus> robotStatuses = new ArrayList<>();
-    private ArrayList<Color> robotsColors = new ArrayList<>();
 
     private volatile int m_targetPositionX = 150;
     private volatile int m_targetPositionY = 100;
@@ -47,10 +45,9 @@ public class GameVisualizer extends JPanel {
     }
 
     public void addRobot(Robot robot, Color robotColor) {
-        robotsColors.add(robotColor);
         Timer currentTimer = initTimer();
         timers.add(currentTimer);
-        RobotStatus currentRobotStatus = new RobotStatus();
+        RobotStatus currentRobotStatus = new RobotStatus(robotColor);
         robotStatuses.add(currentRobotStatus);
         currentTimer.schedule(new TimerTask() {
             @Override
@@ -88,11 +85,9 @@ public class GameVisualizer extends JPanel {
 
     public void setRobot(Robot robot, int id, Color robotColor) {
 
-        robotsColors.set(id, robotColor);
-
         timers.get(id).cancel();
         Timer currentTimer = initTimer();
-        RobotStatus currentRobotStatus = new RobotStatus();
+        RobotStatus currentRobotStatus = new RobotStatus(robotColor);
 
         timers.set(id, currentTimer);
         robotStatuses.set(id, currentRobotStatus);
@@ -132,8 +127,7 @@ public class GameVisualizer extends JPanel {
         for (int i = 0; i < robotStatuses.size(); ++i) {
             RobotStatus robotStatus = robotStatuses.get(i);
             Graphics2D g2d = (Graphics2D) g;
-            Color currentRobotColors = robotsColors.get(i);
-            drawRobot(g2d, round(robotStatus.m_robotPositionX), round(robotStatus.m_robotPositionY), robotStatus.m_robotDirection, robotStatus, currentRobotColors);
+            drawRobot(g2d, round(robotStatus.m_robotPositionX), round(robotStatus.m_robotPositionY), robotStatus.m_robotDirection, robotStatus, robotStatus.color);
             drawTarget(g2d, m_targetPositionX, m_targetPositionY);
         }
     }
@@ -166,7 +160,10 @@ public class GameVisualizer extends JPanel {
         volatile double m_robotPositionX = 100;
         volatile double m_robotPositionY = 100;
         volatile double m_robotDirection = 0;
+        volatile Color color;
 
-
+        public RobotStatus(Color robotColor) {
+            this.color = robotColor;
+        }
     }
 }

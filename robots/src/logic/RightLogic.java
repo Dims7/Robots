@@ -11,7 +11,7 @@ import AdditionalMath.RobotCondition;
 public class RightLogic implements Robot {
 
   private static final double maxVelocity = 0.1;
-  private static final double maxAngularVelocity = 0.005;
+  private static final double maxAngularVelocity = 0.01;
 
   @Override
   public RobotCondition onModelUpdateEvent(double m_robotPositionX, double m_robotPositionY,
