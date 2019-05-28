@@ -144,7 +144,7 @@ public class MainApplicationFrame extends JFrame {
         gameWindow.addRobot(robot);
 
       } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex) {
-        ex.printStackTrace();
+        System.out.println("Can`t load robot");
       }
     }
 
