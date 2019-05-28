@@ -128,7 +128,7 @@ public class MainApplicationFrame extends JFrame {
   private void changeLogic() {
     JFileChooser chooser = new JFileChooser();
     chooser.setFileFilter(new FileNameExtensionFilter("Robot logic class (.class)", "class"));
-    chooser.setCurrentDirectory(new File("."));
+    chooser.setCurrentDirectory(new File("./robots/out/production/robots/logic"));
     int returnVal = chooser.showSaveDialog(this);
     if (returnVal == chooser.APPROVE_OPTION) {
       try {
